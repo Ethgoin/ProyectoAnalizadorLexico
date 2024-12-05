@@ -1,57 +1,19 @@
+
 START
-INIT
-_moveForward
-SET_SPEED = 10
-increaseSpeed
-TURN_LEFT
-moveTo
-rotateAngle
-WAIT
 
-IF condition THEN
-    sensor_1
+// Configuración inicial
+ACTIVATE_SENSOR
+SET _SPEED = 5
+SET BATTERY_LEVEL = 100
+
+// Ciclo principal con lógica anidada
+WHILE BATTERY_LEVEL > 10 
     READ_SENSOR
-    logEntry
-ELSE
-    deactivateSensor_01
-    LOG "Sensor inactivo"
-END
-
-FOR counter = 1 TO 10 DO
-    MOVE_BACKWARD
-    TURN_RIGHT
-    IF counter > 5 THEN
-        PAUSE
-    END
-    RESUME
-END
-
-fileUploader
-DELETE_FILE
-COPY_FILE
-RENAME_FILE
-SAVE_FILE
-
-WHILE lowBatteryStatus DO
-    CHECK_BATTERY
-    chargeBattery_99
-END
-
-alarmActivator
-DEACTIVATE_ALARM
-TOGGLE_LIGHT
-
-BREAK
-CONTINUE
-
-SHUTDOWN
-systemReboot
-RESET
-CALIBRATE
-
-doorControl
-CLOSE_DOOR
-LOCK
-unlock_system
-
-PRINT "Finalizando"
+    IF (READ_SENSOR_1 > #50$ AND READ_SENSOR_2 < 30) THEN
+        TURNo_LEFT
+        MOVE_FORWARD(10)
+        IF READ_SENSOR_3 == "CLEAR" THEN
+            PRINT "Trayectoria despejada"
+        ELSE
+            TURN_RIGHT
+            MOVE_BACKWARD(5)
