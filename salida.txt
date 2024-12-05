@@ -1,71 +1,66 @@
-START - INICIAR
-INIT - IDENTIFICADOR
-_moveForward - IDENTIFICADOR
-SET_SPEED - IDENTIFICADOR
-= - ASIGNACION
-10 - NUMERO_ENTERO
-increaseSpeed - IDENTIFICADOR
-TURN_LEFT - TURN_LEFT
-moveTo - IDENTIFICADOR
-rotateAngle - IDENTIFICADOR
-WAIT - IDENTIFICADOR
-IF - IF
-condition - IDENTIFICADOR
-THEN - THEN
-sensor_1 - IDENTIFICADOR
-READ_SENSOR - LEER_SENSOR
-logEntry - IDENTIFICADOR
-ELSE - ELSE
-deactivateSensor_01 - IDENTIFICADOR
-LOG - IDENTIFICADOR
-" - COMILLAS
-Sensor - IDENTIFICADOR
-inactivo - IDENTIFICADOR
-" - COMILLAS
-END - END
-FOR - FOR
-counter - IDENTIFICADOR
-= - ASIGNACION
-1 - NUMERO_ENTERO
-TO - IDENTIFICADOR
-10 - NUMERO_ENTERO
-DO - IDENTIFICADOR
-MOVE_BACKWARD - MOVE_BACKWARD
-TURN_RIGHT - TURN_RIGHT
-IF - IF
-counter - IDENTIFICADOR
-> - MAYOR_QUE
-5 - NUMERO_ENTERO
-THEN - THEN
-PAUSE - PAUSA
-END - END
-RESUME - RESUME
-END - END
-fileUploader - IDENTIFICADOR
-DELETE_FILE - IDENTIFICADOR
-COPY_FILE - IDENTIFICADOR
-RENAME_FILE - IDENTIFICADOR
-SAVE_FILE - IDENTIFICADOR
-WHILE - WHILE
-lowBatteryStatus - IDENTIFICADOR
-DO - IDENTIFICADOR
-CHECK_BATTERY - IDENTIFICADOR
-chargeBattery_99 - IDENTIFICADOR
-END - END
-alarmActivator - IDENTIFICADOR
-DEACTIVATE_ALARM - IDENTIFICADOR
-TOGGLE_LIGHT - IDENTIFICADOR
-BREAK - IDENTIFICADOR
-CONTINUE - IDENTIFICADOR
-SHUTDOWN - SHUTDOWN
-systemReboot - IDENTIFICADOR
-RESET - IDENTIFICADOR
-CALIBRATE - IDENTIFICADOR
-doorControl - IDENTIFICADOR
-CLOSE_DOOR - IDENTIFICADOR
-LOCK - IDENTIFICADOR
-unlock_system - IDENTIFICADOR
-PRINT - IDENTIFICADOR
-" - COMILLAS
-Finalizando - IDENTIFICADOR
-" - COMILLAS
+0: (PALABRA_RESERVADA, "START") en línea 2, columna 1
+1: (OPERADOR_ARITMETICO, "/") en línea 4, columna 1
+2: (OPERADOR_ARITMETICO, "/") en línea 4, columna 2
+3: (IDENTIFICADOR, "Configuraci") en línea 4, columna 4
+4: ERROR: Línea 4, Columna 15: Símbolo desconocido 'ó'
+5: (IDENTIFICADOR, "n") en línea 4, columna 16
+6: (IDENTIFICADOR, "inicial") en línea 4, columna 18
+7: (PALABRA_RESERVADA, "ACTIVATE_SENSOR") en línea 5, columna 1
+8: (IDENTIFICADOR, "SET") en línea 6, columna 1
+9: (IDENTIFICADOR, "_SPEED") en línea 6, columna 5
+10: (OPERADOR_ASIGNACION, "=") en línea 6, columna 12
+11: (NUMERO, "5") en línea 6, columna 14
+12: (IDENTIFICADOR, "SET") en línea 7, columna 1
+13: (IDENTIFICADOR, "BATTERY_LEVEL") en línea 7, columna 5
+14: (OPERADOR_ASIGNACION, "=") en línea 7, columna 19
+15: (NUMERO, "100") en línea 7, columna 21
+16: (OPERADOR_ARITMETICO, "/") en línea 9, columna 1
+17: (OPERADOR_ARITMETICO, "/") en línea 9, columna 2
+18: (IDENTIFICADOR, "Ciclo") en línea 9, columna 4
+19: (IDENTIFICADOR, "principal") en línea 9, columna 10
+20: (IDENTIFICADOR, "con") en línea 9, columna 20
+21: (IDENTIFICADOR, "l") en línea 9, columna 24
+22: ERROR: Línea 9, Columna 25: Símbolo desconocido 'ó'
+23: (IDENTIFICADOR, "gica") en línea 9, columna 26
+24: (IDENTIFICADOR, "anidada") en línea 9, columna 31
+25: (PALABRA_RESERVADA, "WHILE") en línea 10, columna 1
+26: (IDENTIFICADOR, "BATTERY_LEVEL") en línea 10, columna 7
+27: (OPERADOR_RELACIONAL, ">") en línea 10, columna 21
+28: (NUMERO, "10") en lígitnea 10, columna 23
+29: (PALABRA_RESERVADA, "READ_SENSOR") en línea 11, columna 5
+30: (PALABRA_RESERVADA, "IF") en línea 12, columna 5
+31: ((, "PARENTESIS_ABIERTO") en línea 12, columna 8
+32: (IDENTIFICADOR, "READ_SENSOR_1") en línea 12, columna 9
+33: (OPERADOR_RELACIONAL, ">") en línea 12, columna 23
+34: ERROR: Línea 12, Columna 25: Símbolo desconocido '#'
+35: (NUMERO, "50") en línea 12, columna 26
+36: ERROR: Línea 12, Columna 28: Símbolo desconocido '$'
+37: (IDENTIFICADOR, "AND") en línea 12, columna 30
+38: (IDENTIFICADOR, "READ_SENSOR_2") en línea 12, columna 34
+39: (OPERADOR_RELACIONAL, "<") en línea 12, columna 48
+40: (NUMERO, "30") en línea 12, columna 50
+41: (), "PARENTESIS_CERRADO") en línea 12, columna 52
+42: (PALABRA_RESERVADA, "THEN") en línea 12, columna 54
+43: (IDENTIFICADOR, "TURNo_LEFT") en línea 13, columna 9
+44: (PALABRA_RESERVADA, "MOVE_FORWARD") en línea 14, columna 9
+45: ((, "PARENTESIS_ABIERTO") en línea 14, columna 21
+46: (NUMERO, "10") en línea 14, columna 22
+47: (), "PARENTESIS_CERRADO") en línea 14, columna 24
+48: (PALABRA_RESERVADA, "IF") en línea 15, columna 9
+49: (IDENTIFICADOR, "READ_SENSOR_3") en línea 15, columna 12
+50: (OPERADOR_RELACIONAL, "==") en línea 15, columna 26
+51: ERROR: Línea 15, Columna 29: Símbolo desconocido '"'
+52: (IDENTIFICADOR, "CLEAR") en línea 15, columna 30
+53: ERROR: Línea 15, Columna 35: Símbolo desconocido '"'
+54: (PALABRA_RESERVADA, "THEN") en línea 15, columna 37
+55: (PALABRA_RESERVADA, "PRINT") en línea 16, columna 13
+56: ERROR: Línea 16, Columna 19: Símbolo desconocido '"'
+57: (IDENTIFICADOR, "Trayectoria") en línea 16, columna 20
+58: (IDENTIFICADOR, "despejada") en línea 16, columna 32
+59: ERROR: Línea 16, Columna 41: Símbolo desconocido '"'
+60: (PALABRA_RESERVADA, "ELSE") en línea 17, columna 9
+61: (PALABRA_RESERVADA, "TURN_RIGHT") en línea 18, columna 13
+62: (PALABRA_RESERVADA, "MOVE_BACKWARD") en línea 19, columna 13
+63: ((, "PARENTESIS_ABIERTO") en línea 19, columna 26
+64: (NUMERO, "5") en línea 19, columna 27
+65: (), "PARENTESIS_CERRADO") en línea 19, columna 28
