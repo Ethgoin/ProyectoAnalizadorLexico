@@ -1,0 +1,19 @@
+
+START
+
+// Configuración inicial
+ACTIVATE_SENSOR
+SET _SPEED = 5
+SET BATTERY_LEVEL = 100
+
+// Ciclo principal con lógica anidada
+WHILE BATTERY_LEVEL > 10 
+    READ_SENSOR
+    IF (READ_SENSOR_1 > #50$ AND READ_SENSOR_2 < 30) THEN
+        TURNo_LEFT
+        MOVE_FORWARD(10)
+        IF READ_SENSOR_3 == "CLEAR" THEN
+            PRINT "Trayectoria despejada"
+        ELSE
+            TURN_RIGHT
+            MOVE_BACKWARD(5)
