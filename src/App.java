@@ -1,4 +1,9 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 
 public class App {
     public static void main(String[] args) {
@@ -10,60 +15,19 @@ public class App {
         String archivoEntrada = args[0];
         String archivoSalida = args[1];
 
-        File inputFile = new File(archivoEntrada);
-        if (!inputFile.exists() || !inputFile.isFile()) {
-            System.err.println("Error: El archivo de entrada no existe: " + archivoEntrada);
-            return;
-        }
-
-        System.out.println("Leyendo archivo de entrada: " + archivoEntrada);
-
         try (
-            BufferedReader reader = new BufferedReader(new FileReader(archivoEntrada));
+            Reader reader = new FileReader(archivoEntrada);
             BufferedWriter writer = new BufferedWriter(new FileWriter(archivoSalida))
         ) {
             Lexerclass lexer = new Lexerclass(reader, writer);
 
             System.out.println("Iniciando análisis léxico...");
-            int tokenCount = 0;
-
-            while (true) {
-                System.out.println("Procesando siguiente token..."); // Depuración
-                lexer.yylex(); // Invoca el lexer
-                tokenCount++;
-
-                if (lexer.isEOF()) {
-                    System.out.println("Se alcanzó el final del archivo.");
-                    break;
-                }
+            while (!lexer.isEOF()) {
+                lexer.yylex();
             }
-
-            System.out.println("Análisis completado. Tokens procesados: " + tokenCount);
-            System.out.println("Tokens guardados en: " + archivoSalida);
-
-            if (tokenCount == 0) {
-                System.out.println("Advertencia: No se generaron tokens. Verifique el contenido de entrada.");
-            }
+            System.out.println("Análisis léxico completado. Revisa el archivo '" + archivoSalida + "' para los resultados.");
         } catch (IOException e) {
-            System.err.println("Error procesando los archivos:");
-            e.printStackTrace();
+            System.err.println("Error procesando los archivos: " + e.getMessage());
         }
     }
 }
-
-
-/*public boolean isEOF() {
-    return (zzLexicalState == YYEOF);
-
-
-    public boolean isEOF() {
-    return (zzAtEOF);
-}
-
-
-    {INVALID_IDENTIFIER}   { 
-        System.err.println("Invalid identifier: " + yytext());
-        return null; // Consume el token
-    }
-
- */
