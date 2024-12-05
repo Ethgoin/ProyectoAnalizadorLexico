@@ -1,9 +1,9 @@
-import java.io.BufferedWriter; 
-import java.io.File;
-import java.io.FileWriter; 
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Reader; 
+import java.util.Map;
+
 %%
+
 %public
 %class Lexerclass
 %unicode
@@ -11,106 +11,102 @@ import java.io.Reader;
 
 %{
 private BufferedWriter writer;
-    public boolean isEOF() {
-    return (zzAtEOF);
+private int lineNumber = 1; // Contador de líneas
+private int columnNumber = 1; // Contador de columnas
+private int cont = 0; // Contador de tokens procesados
+
+private static final Map<String, String> palabrasReservadas = Map.ofEntries(
+    Map.entry("MOVE_FORWARD", "MOVE_FORWARD"),
+    Map.entry("MOVE_BACKWARD", "MOVE_BACKWARD"),
+    Map.entry("TURN_LEFT", "TURN_LEFT"),
+    Map.entry("TURN_RIGHT", "TURN_RIGHT"),
+    Map.entry("TURN_UP", "SUBIR"),
+    Map.entry("TURN_DOWN", "BAJAR"),
+    Map.entry("MOVE_TO", "MOVER_A"),
+    Map.entry("ROTATE", "ROTAR"),
+    Map.entry("STOP", "STOP"),
+    Map.entry("STOP_IMMEDIATELY", "DETENER_INMEDIATAMENTE"),
+    Map.entry("REVERSE", "INVERTIR"),
+    Map.entry("WAIT", "ESPERAR"),
+    Map.entry("INCREASE_SPEED", "AUMENTAR_VELOCIDAD"),
+    Map.entry("DECREASE_SPEED", "DISMINUIR_VELOCIDAD"),
+    Map.entry("SET_SPEED", "ESTABLECER_VELOCIDAD"),
+    Map.entry("READ_SENSOR", "READ_SENSOR"),
+    Map.entry("ACTIVATE_SENSOR", "ACTIVATE_SENSOR"),
+    Map.entry("DEACTIVATE_SENSOR", "DEACTIVATE_SENSOR"),
+    Map.entry("START", "START"),
+    Map.entry("SHUTDOWN", "SHUTDOWN"),
+    Map.entry("PAUSE", "PAUSE"),
+    Map.entry("RESUME", "RESUME"),
+    Map.entry("INIT", "INICIALIZAR"),
+    Map.entry("RESET", "REINICIAR"),
+    Map.entry("REBOOT", "REARRANCAR"),
+    Map.entry("CALIBRATE", "CALIBRAR"),
+    Map.entry("SHUT_OFF", "APAGAR_COMPLETAMENTE"),
+    Map.entry("ACTIVATE_ALARM", "ACTIVAR_ALARMA"),
+    Map.entry("DEACTIVATE_ALARM", "DESACTIVAR_ALARMA"),
+    Map.entry("CHECK_BATTERY", "VERIFICAR_BATERIA"),
+    Map.entry("CHARGE_BATTERY", "CARGAR_BATERIA"),
+    Map.entry("LOW_BATTERY", "BATERIA_BAJA"),
+    Map.entry("IF", "IF"),
+    Map.entry("THEN", "THEN"),
+    Map.entry("ELSE", "ELSE"),
+    Map.entry("WHILE", "WHILE"),
+    Map.entry("FOR", "FOR"),
+    Map.entry("BREAK", "INTERRUMPIR"),
+    Map.entry("CONTINUE", "CONTINUAR"),
+    Map.entry("UPLOAD_FILE", "SUBIR_ARCHIVO"),
+    Map.entry("DELETE_FILE", "ELIMINAR_ARCHIVO"),
+    Map.entry("COPY_FILE", "COPIAR_ARCHIVO"),
+    Map.entry("RENAME_FILE", "RENOMBRAR_ARCHIVO"),
+    Map.entry("SAVE_FILE", "GUARDAR_ARCHIVO"),
+    Map.entry("LOG", "REGISTRAR"),
+    Map.entry("PRINT", "IMPRIMIR"),
+    Map.entry("SCAN", "ESCANEAR"),
+    Map.entry("UPLOAD", "SUBIR"),
+    Map.entry("DOWNLOAD", "DESCARGAR"),
+    Map.entry("TRUE", "VERDADERO"),
+    Map.entry("FALSE", "FALSO"),
+    Map.entry("NULL", "NULO"),
+    Map.entry("OPEN_DOOR", "ABRIR_PUERTA"),
+    Map.entry("CLOSE_DOOR", "CERRAR_PUERTA"),
+    Map.entry("UNLOCK", "DESBLOQUEAR"),
+    Map.entry("LOCK", "BLOQUEAR"),
+    Map.entry("TOGGLE_LIGHT", "INTERRUMPIR_LUZ")
+);
+
+
+public boolean isEOF() {
+    return zzAtEOF;
 }
 
-public Lexerclass (Reader in, BufferedWriter writer) {
-this.zzReader = in;
-this.writer = writer;
+public Lexerclass(Reader in, BufferedWriter writer) {
+    this.zzReader = in;
+    this.writer = writer;
 }
 
-private void escribeToken(String lexema, String token) {
-try {
-writer.write(lexema + " - " + token + "\n");
-} catch (IOException e) { 
-e.printStackTrace();
+// Escribe un token en el archivo de salida
+private void escribeToken(String tipo, String lexema) {
+    try {
+        writer.write(cont + ": (" + tipo + ", \"" + lexema + "\") en línea " + lineNumber + ", columna " + columnNumber + "\n");
+        columnNumber += yytext().length(); // Actualiza la columna según el tamaño del lexema
+        cont++;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }
+
+// Reporta un error en el archivo de salida
+private void reportaError(String lexema, String mensaje) {
+    try {
+        writer.write(cont + ": ERROR: Línea " + lineNumber + ", Columna " + columnNumber + ": " + mensaje + " '" + lexema + "'\n");
+        columnNumber += lexema.length(); // Actualiza la columna
+        cont++;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }
 %}
-
-MOVE_FORWARD = "MOVE_FORWARD"
-MOVE_BACKWARD = "MOVE_BACKWARD"
-TURN_LEFT = "TURN_LEFT"
-TURN_RIGHT = "TURN_RIGHT"
-TURN_UP = "SUBIR"
-TURN_DOWN = "BAJAR"
-MOVE_TO = "MOVER_A"
-ROTATE = "ROTAR"
-STOP = "STOP"
-STOP_IMMEDIATELY = "DETENER_INMEDIATAMENTE"
-REVERSE = "INVERTIR"
-WAIT = "ESPERAR"
-
-INCREASE_SPEED = "AUMENTAR_VELOCIDAD"
-DECREASE_SPEED = "DISMINUIR_VELOCIDAD"
-SET_SPEED = "ESTABLECER_VELOCIDAD"
-
-READ_SENSOR = "READ_SENSOR"
-ACTIVATE_SENSOR = "ACTIVATE_SENSOR"
-DEACTIVATE_SENSOR = "DEACTIVATE_SENSOR"
-
-START = "START"
-SHUTDOWN = "SHUTDOWN"
-PAUSE = "PAUSE"
-RESUME = "RESUME"
-INIT = "INICIALIZAR"
-RESET = "REINICIAR"
-REBOOT = "REARRANCAR"
-CALIBRATE = "CALIBRAR"
-SHUT_OFF = "APAGAR_COMPLETAMENTE"
-
-ACTIVATE_ALARM = "ACTIVAR_ALARMA"
-DEACTIVATE_ALARM = "DESACTIVAR_ALARMA"
-CHECK_BATTERY = "VERIFICAR_BATERIA"
-CHARGE_BATTERY = "CARGAR_BATERIA"
-LOW_BATTERY = "BATERIA_BAJA"
-
-IF = "IF"
-THEN = "THEN"
-ELSE = "ELSE"
-WHILE = "WHILE"
-FOR = "FOR"
-END = "END"
-BREAK = "INTERRUMPIR"
-CONTINUE = "CONTINUAR"
-
-UPLOAD_FILE = "SUBIR_ARCHIVO"
-DELETE_FILE = "ELIMINAR_ARCHIVO"
-COPY_FILE = "COPIAR_ARCHIVO"
-RENAME_FILE = "RENOMBRAR_ARCHIVO"
-SAVE_FILE = "GUARDAR_ARCHIVO"
-
-LOG = "REGISTRAR"
-PRINT = "IMPRIMIR"
-SCAN = "ESCANEAR"
-UPLOAD = "SUBIR"
-DOWNLOAD = "DESCARGAR"
-
-TRUE = "VERDADERO"
-FALSE = "FALSO"
-NULL = "NULO"
-
-OPEN_DOOR = "ABRIR_PUERTA"
-CLOSE_DOOR = "CERRAR_PUERTA"
-UNLOCK = "DESBLOQUEAR"
-LOCK = "BLOQUEAR"
-TOGGLE_LIGHT = "INTERRUMPIR_LUZ"
-
-IDENTIFIER = [a-zA-Z_][a-zA-Z_0-9]*
-
-DOUBLE_QUOTE = \"
-ASSIGN = "="
-PLUS = "\+"
-MINUS = "-"
-MULTIPLY = "\*"
-DIVIDE = "/"
-GREATER_THAN = ">"
-LESS_THAN = "<"
-EQUALS = "=="
-NOT_EQUALS = "!="
-AND = "AND"
-OR = "OR"
 
 OPEN_PAREN = "\("
 CLOSE_PAREN = "\)"
@@ -119,116 +115,105 @@ CLOSE_BRACE = "\}"
 SEMICOLON = ";"
 COLON = ":"
 COMMA = ","
-
-INTEGER = [0-9]+
-FLOAT = [0-9]+\.[0-9]+
-UNKNOWN_SYMBOL = .
-
+ESPACIO=[ \t\r]+
 %%
 
-<YYINITIAL> {
-    <YYINITIAL> {
-    {MOVE_FORWARD}         { escribeToken(yytext(), "MOVE_FORWARD"); }
-    {MOVE_BACKWARD}        { escribeToken(yytext(), "MOVE_BACKWARD"); }
-    {TURN_LEFT}            { escribeToken(yytext(), "TURN_LEFT"); }
-    {TURN_RIGHT}           { escribeToken(yytext(), "TURN_RIGHT"); }
-    {TURN_UP}              { escribeToken(yytext(), "SUBIR"); }
-    {TURN_DOWN}            { escribeToken(yytext(), "BAJAR"); }
-    {MOVE_TO}              { escribeToken(yytext(), "MOVER_A"); }
-    {ROTATE}               { escribeToken(yytext(), "ROTAR"); }
-    {STOP}                 { escribeToken(yytext(), "PARAR"); }
-    {STOP_IMMEDIATELY}     { escribeToken(yytext(), "DETENER_INMEDIATAMENTE"); }
-    {REVERSE}              { escribeToken(yytext(), "INVERTIR"); }
-    {WAIT}                 { escribeToken(yytext(), "ESPERAR"); }
+// Ignorar espacios y saltos de línea
+{ESPACIO}                { columnNumber += yylength(); /* Ignorar espacios */ }
+\n                   { lineNumber++; columnNumber = 1; }
 
-    {INCREASE_SPEED}       { escribeToken(yytext(), "AUMENTAR_VELOCIDAD"); }
-    {DECREASE_SPEED}       { escribeToken(yytext(), "DISMINUIR_VELOCIDAD"); }
-    {SET_SPEED}            { escribeToken(yytext(), "ESTABLECER_VELOCIDAD"); }
+// Palabras reservadas
+"IF"                { escribeToken("PALABRA_RESERVADA", yytext()); }
+"ELSE"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"THEN"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"MOVE_FORWARD"      { escribeToken("PALABRA_RESERVADA", yytext()); }
+"MOVE_BACKWARD"     { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TURN_LEFT"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TURN_RIGHT"        { escribeToken("PALABRA_RESERVADA", yytext()); }
+"STOP"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"END"               { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TURN_UP"           { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TURN_DOWN"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"MOVE_TO"           { escribeToken("PALABRA_RESERVADA", yytext()); }
+"ROTATE"            { escribeToken("PALABRA_RESERVADA", yytext()); }
+"STOP_IMMEDIATELY"  { escribeToken("PALABRA_RESERVADA", yytext()); }
+"REVERSE"           { escribeToken("PALABRA_RESERVADA", yytext()); }
+"WAIT"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"INCREASE_SPEED"    { escribeToken("PALABRA_RESERVADA", yytext()); }
+"DECREASE_SPEED"    { escribeToken("PALABRA_RESERVADA", yytext()); }
+"SET_SPEED"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"READ_SENSOR"       { escribeToken("PALABRA_RESERVADA", yytext()); }
+"ACTIVATE_SENSOR"   { escribeToken("PALABRA_RESERVADA", yytext()); }
+"DEACTIVATE_SENSOR" { escribeToken("PALABRA_RESERVADA", yytext()); }
+"START"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"SHUTDOWN"          { escribeToken("PALABRA_RESERVADA", yytext()); }
+"PAUSE"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"RESUME"            { escribeToken("PALABRA_RESERVADA", yytext()); }
+"INIT"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"RESET"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"REBOOT"            { escribeToken("PALABRA_RESERVADA", yytext()); }
+"CALIBRATE"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"SHUT_OFF"          { escribeToken("PALABRA_RESERVADA", yytext()); }
+"ACTIVATE_ALARM"    { escribeToken("PALABRA_RESERVADA", yytext()); }
+"DEACTIVATE_ALARM"  { escribeToken("PALABRA_RESERVADA", yytext()); }
+"CHECK_BATTERY"     { escribeToken("PALABRA_RESERVADA", yytext()); }
+"CHARGE_BATTERY"    { escribeToken("PALABRA_RESERVADA", yytext()); }
+"LOW_BATTERY"       { escribeToken("PALABRA_RESERVADA", yytext()); }
+"WHILE"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"FOR"               { escribeToken("PALABRA_RESERVADA", yytext()); }
+"BREAK"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"CONTINUE"          { escribeToken("PALABRA_RESERVADA", yytext()); }
+"UPLOAD_FILE"       { escribeToken("PALABRA_RESERVADA", yytext()); }
+"DELETE_FILE"       { escribeToken("PALABRA_RESERVADA", yytext()); }
+"COPY_FILE"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"RENAME_FILE"       { escribeToken("PALABRA_RESERVADA", yytext()); }
+"SAVE_FILE"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"LOG"               { escribeToken("PALABRA_RESERVADA", yytext()); }
+"PRINT"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"SCAN"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"UPLOAD"            { escribeToken("PALABRA_RESERVADA", yytext()); }
+"DOWNLOAD"          { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TRUE"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"FALSE"             { escribeToken("PALABRA_RESERVADA", yytext()); }
+"NULL"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"OPEN_DOOR"         { escribeToken("PALABRA_RESERVADA", yytext()); }
+"CLOSE_DOOR"        { escribeToken("PALABRA_RESERVADA", yytext()); }
+"UNLOCK"            { escribeToken("PALABRA_RESERVADA", yytext()); }
+"LOCK"              { escribeToken("PALABRA_RESERVADA", yytext()); }
+"TOGGLE_LIGHT"      { escribeToken("PALABRA_RESERVADA", yytext()); }
 
-    {READ_SENSOR}          { escribeToken(yytext(), "LEER_SENSOR"); }
-    {ACTIVATE_SENSOR}      { escribeToken(yytext(), "ACTIVAR_SENSOR"); }
-    {DEACTIVATE_SENSOR}    { escribeToken(yytext(), "DESACTIVAR_SENSOR"); }
 
-    {START}                { escribeToken(yytext(), "INICIAR"); }
-    {SHUTDOWN}             { escribeToken(yytext(), "SHUTDOWN"); }
-    {PAUSE}                { escribeToken(yytext(), "PAUSA"); }
-    {RESUME}               { escribeToken(yytext(), "RESUME"); }
-    {INIT}                 { escribeToken(yytext(), "INICIALIZAR"); }
-    {RESET}                { escribeToken(yytext(), "REINICIAR"); }
-    {REBOOT}               { escribeToken(yytext(), "REARRANCAR"); }
-    {CALIBRATE}            { escribeToken(yytext(), "CALIBRAR"); }
-    {SHUT_OFF}             { escribeToken(yytext(), "APAGAR_COMPLETAMENTE"); }
-
-    {ACTIVATE_ALARM}       { escribeToken(yytext(), "ACTIVAR_ALARMA"); }
-    {DEACTIVATE_ALARM}     { escribeToken(yytext(), "DESACTIVAR_ALARMA"); }
-    {CHECK_BATTERY}        { escribeToken(yytext(), "VERIFICAR_BATERIA"); }
-    {CHARGE_BATTERY}       { escribeToken(yytext(), "CARGAR_BATERIA"); }
-    {LOW_BATTERY}          { escribeToken(yytext(), "BATERIA_BAJA"); }
-
-    {IF}                   { escribeToken(yytext(), "IF"); }
-    {THEN}                 { escribeToken(yytext(), "THEN"); }
-    {ELSE}                 { escribeToken(yytext(), "ELSE"); }
-    {WHILE}                { escribeToken(yytext(), "WHILE"); }
-    {FOR}                  { escribeToken(yytext(), "FOR"); }
-    {END}                  { escribeToken(yytext(), "END"); }
-    {BREAK}                { escribeToken(yytext(), "INTERRUMPIR"); }
-    {CONTINUE}             { escribeToken(yytext(), "CONTINUAR"); }
-
-    {UPLOAD_FILE}          { escribeToken(yytext(), "SUBIR_ARCHIVO"); }
-    {DELETE_FILE}          { escribeToken(yytext(), "ELIMINAR_ARCHIVO"); }
-    {COPY_FILE}            { escribeToken(yytext(), "COPIAR_ARCHIVO"); }
-    {RENAME_FILE}          { escribeToken(yytext(), "RENOMBRAR_ARCHIVO"); }
-    {SAVE_FILE}            { escribeToken(yytext(), "GUARDAR_ARCHIVO"); }
-
-    {LOG}                  { escribeToken(yytext(), "REGISTRAR"); }
-    {PRINT}                { escribeToken(yytext(), "IMPRIMIR"); }
-    {SCAN}                 { escribeToken(yytext(), "ESCANEAR"); }
-    {UPLOAD}               { escribeToken(yytext(), "SUBIR"); }
-    {DOWNLOAD}             { escribeToken(yytext(), "DESCARGAR"); }
-
-    {TRUE}                 { escribeToken(yytext(), "VERDADERO"); }
-    {FALSE}                { escribeToken(yytext(), "FALSO"); }
-    {NULL}                 { escribeToken(yytext(), "NULO"); }
-
-    {OPEN_DOOR}            { escribeToken(yytext(), "ABRIR_PUERTA"); }
-    {CLOSE_DOOR}           { escribeToken(yytext(), "CERRAR_PUERTA"); }
-    {UNLOCK}               { escribeToken(yytext(), "DESBLOQUEAR"); }
-    {LOCK}                 { escribeToken(yytext(), "BLOQUEAR"); }
-    {TOGGLE_LIGHT}         { escribeToken(yytext(), "INTERRUMPIR_LUZ"); }
-
-    {IDENTIFIER}           { escribeToken(yytext(), "IDENTIFICADOR"); }
-
-    {DOUBLE_QUOTE}         { escribeToken(yytext(), "COMILLAS"); }
-    {ASSIGN}               { escribeToken(yytext(), "ASIGNACION"); }
-    {PLUS}                 { escribeToken(yytext(), "SUMA"); }
-    {MINUS}                { escribeToken(yytext(), "RESTA"); }
-    {MULTIPLY}             { escribeToken(yytext(), "MULTIPLICACION"); }
-    {DIVIDE}               { escribeToken(yytext(), "DIVISION"); }
-
-    {GREATER_THAN}         { escribeToken(yytext(), "MAYOR_QUE"); }
-    {LESS_THAN}            { escribeToken(yytext(), "MENOR_QUE"); }
-    {EQUALS}               { escribeToken(yytext(), "IGUAL_A"); }
-    {NOT_EQUALS}           { escribeToken(yytext(), "NO_IGUAL"); }
-
-    {AND}                  { escribeToken(yytext(), "Y_LOGICO"); }
-    {OR}                   { escribeToken(yytext(), "O_LOGICO"); }
-
-    {OPEN_PAREN}           { escribeToken(yytext(), "PARENTESIS_ABIERTO"); }
-    {CLOSE_PAREN}          { escribeToken(yytext(), "PARENTESIS_CERRADO"); }
-    {OPEN_BRACE}           { escribeToken(yytext(), "LLAVE_ABIERTA"); }
-    {CLOSE_BRACE}          { escribeToken(yytext(), "LLAVE_CERRADA"); }
-
-    {SEMICOLON}            { escribeToken(yytext(), "PUNTO_Y_COMA"); }
-    {COLON}                { escribeToken(yytext(), "DOS_PUNTOS"); }
-    {COMMA}                { escribeToken(yytext(), "COMA"); }
-
-    {INTEGER}              { escribeToken(yytext(), "NUMERO_ENTERO"); }
-    {FLOAT}                { escribeToken(yytext(), "NUMERO_FLOTANTE"); }
-
-    {UNKNOWN_SYMBOL}       { System.err.println("Simbolo desconocido: " + yytext()); }
-
-    \\s+                   { /* Ignorar espacios en blanco */ }
-    .                      { System.err.println("Error: Token no reconocido: '" + yytext() + "'"); }
+// Identificadores y números
+[a-zA-Z_][a-zA-Z0-9_]* {
+    if (palabrasReservadas.containsKey(yytext())) {
+        escribeToken(palabrasReservadas.get(yytext()), yytext());
+    } else {
+        escribeToken("IDENTIFICADOR", yytext());
     }
 }
+[0-9]+                { escribeToken("NUMERO", yytext()); }
+[0-9]+\.[0-9]+        { escribeToken("NUMERO", yytext()); }
 
+// Operadores
+"="                  { escribeToken("OPERADOR_ASIGNACION", yytext()); }
+"\+"                { escribeToken("OPERADOR_ARITMETICO", yytext()); }
+"-"                  { escribeToken("OPERADOR_ARITMETICO", yytext()); }
+"\\*"                { escribeToken("OPERADOR_ARITMETICO", yytext()); }
+"/"                  { escribeToken("OPERADOR_ARITMETICO", yytext()); }
+">"                  { escribeToken("OPERADOR_RELACIONAL", yytext()); }
+"<"                  { escribeToken("OPERADOR_RELACIONAL", yytext()); }
+"=="                 { escribeToken("OPERADOR_RELACIONAL", yytext()); }
+"!="                 { escribeToken("OPERADOR_RELACIONAL", yytext()); }
+
+// Delimitadores
+{OPEN_PAREN}           { escribeToken(yytext(), "PARENTESIS_ABIERTO"); }
+{CLOSE_PAREN}          { escribeToken(yytext(), "PARENTESIS_CERRADO"); }
+{OPEN_BRACE}           { escribeToken(yytext(), "LLAVE_ABIERTA"); }
+{CLOSE_BRACE}          { escribeToken(yytext(), "LLAVE_CERRADA"); }
+{SEMICOLON}            { escribeToken(yytext(), "PUNTO_Y_COMA"); }
+{COLON}                { escribeToken(yytext(), "DOS_PUNTOS"); }
+{COMMA}                { escribeToken(yytext(), "COMA"); }
+
+
+// Manejo de errores
+.                    { reportaError(yytext(), "Símbolo desconocido"); }
